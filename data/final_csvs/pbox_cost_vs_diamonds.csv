@@ -1,0 +1,15 @@
+name,V,E,n_diamonds,maxcond,sum_2^C,steps,pbox_propagate_seconds,status
+random_n12_s1,12,18,8,3,26,50,3.4497,ok
+random_n12_s2,12,18,9,3,32,50,3.9519,ok
+counterexample,15,23,13,4,56,50,7.4928,ok
+random_n15_s1,15,25,17,5,160,50,15.0563,ok
+complete_8,8,28,21,6,240,50,33.3256,ok
+grid_5x5,25,36,50,5,396,50,93.6033,ok
+random_n15_s2,15,27,29,7,568,50,40.3280,ok
+grid_4x4,16,24,39,7,634,50,113.8107,ok
+layered_5x4,,,,,,50,,timeout (5min budget exceeded)
+random_n20_s2,20,41,38,9,1254,50,92.5307,ok
+random_n20_s1,,,,,,50,,timeout (5min budget exceeded)
+bridge_5,,,,,,50,,timeout (5min budget exceeded)
+random_n25_s2,,,,,,50,,timeout (5min budget exceeded)
+random_n25_s1,,,,,,50,,timeout (5min budget exceeded)
