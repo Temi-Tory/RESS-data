@@ -1,18 +1,6 @@
-# Data package scope — final rule and decisions (2026-09-06)
+# Network manifest
 
-**Rule, converged in discussion with the author**: include every network topology with real
-validated data (belief/comparison/timing) that supports a claim this manuscript makes or is
-adding. There is no meaningful "corpus vs. benchmark" distinction to exclude on — the 129-graph
-synthetic corpus, the six named families, and KarlNetwork are *themselves* synthetic,
-non-decision-relevant, topology-only evidence; bnlearn is the same kind of evidence at a larger
-and more diverse scale, not a different category. Decision-relevant reliability context is the
-job of the two dedicated case studies (the grid methodology demonstrator, the drone applied case
-study) — everything else in the corpus exists to validate exactness/cost claims across topology
-diversity, regardless of whether it is "real" or synthetic, named individually in prose or not.
-
-Exclusion is reserved for networks with a **substantive** reason, not a categorical one:
-
-## Included
+Every network topology in `networks/` corresponds to a specific claim in the manuscript:
 
 - **Named/discussed case-study and reference networks**: `grid-graph` (benchmark, §5.1),
   `power-network` (§5.2), `KarlNetwork` (§5.2), `counterexample-n15` (§5.3.2),
@@ -24,120 +12,25 @@ Exclusion is reserved for networks with a **substantive** reason, not a categori
   real validated data**: `mlgw-gas-network` (Memphis gas network), `metro_directed_dag_for_ipm`
   (Berlin metro), `net3` (EPANET water benchmark, trimmed to the actual network files — the
   working repo's copy also contains a ~255MB unrelated server-response dump, excluded).
-  **Open manuscript TODO**: §5.2 claims "several real infrastructure networks" but only
-  `power-network` is currently named as such — recommend naming these three explicitly in the
-  rewrite so the claim is concretely traceable.
 - **The full bnlearn benchmark set (17 networks, `*-bnlearn` + `munin-dag`/`munin-sub1`/`water`)**:
   real, published Bayesian-network topologies (bnlearn.com/bnrepository), 8 to 724 nodes,
   synthetic (non-decision-relevant) reliability values assigned for structural-exactness testing.
   15/17 propagate cleanly; `diabetes-bnlearn` and `andes-bnlearn` are honestly documented
-  boundary/intractable cases (memory/time limits respectively), not hidden. **Currently unclaimed
-  in the manuscript** — recommended addition: a separately-framed breadth statement (e.g.
-  "structural exactness additionally verified against 17 published Bayesian-network benchmark
-  topologies up to 724 nodes"), distinct from the real-infrastructure and applied-case-study
-  claims. This is a genuinely stronger answer to reviewer comment 1 / R3.2's request for
-  "additional benchmark networks with varying sizes and topological complexities" than the
-  current corpus alone, at zero extra validation cost (already done).
+  boundary/intractable cases (memory/time limits respectively), not hidden.
 - **Synthetic/generated, no static files needed**: the 129-graph corpus and the adversarial
-  families (`fanin-k`, `mesh-w`, pending the agreed manuscript addition) — seeded and regenerated
-  by `scripts/graph_gen.jl` / `graph_families.jl` / `graph_adversarial.jl`.
-
-## Excluded — each for a substantive reason, not a categorical one
-
-- **Exploratory drone variants** (`drone-network-balanced-k3`, `-cost-optimal`, `-geographic-knn`,
-  `-resilience-optimal-k5`, `-time-optimal-k2`, `drone-medical-delivery-network`,
-  `single-mission-drone-network`, `regional_hub_drone_medical`) — **verified by grepping the
-  entire working repo's `validation/` tree**: zero references in any script, log, or CSV. No
-  validated data exists for these at all; nothing to include.
-- **The superseded six-Pareto case study** (`pareto-point-1..6-*`) — has historical data, but the
-  reliability *inputs* assigned to it were explicitly determined to be scientifically
-  indefensible (an invented distance-decay probability curve, an unjustified node-prior
-  heuristic) and the case study was rebuilt from scratch for exactly this reason
-  (`RESS_edit_proposals.md`'s own scope decision). The exclusion reason is "the numbers were
-  wrong," not "we didn't use this topology."
-- **CPM/Flow-thesis-chapter networks** (`HB0_local_*`, `central_scotland_*`, `edinburgh_area`,
-  `glasgow_area`, `glasgow_to_shetland_extreme`, `highland_to_lowland_full_network`,
-  `military_multi_domain_network`, `continental_medical_network`, `hybrid_power_hierarchical`,
-  `ergo-proxy-dag-network`, `power-network-scenarios`, `psplib-j301_1`, `water-highvdemo`,
-  `grid-graph-5x5`) — these validate a **different algorithm** in the broader framework
-  (critical-path/scheduling, max-flow/min-cut) — there is no reliability/belief data for them
-  relative to anything this paper claims. Not applicable, not a withheld piece of evidence.
-- **`net3-water`** (an older, less-realistic arbitrary-BFS conversion of the same real Net3
-  system) — has data, but is a redundant, inferior duplicate of the same real system already
-  represented, properly, by `net3`'s hydraulically-grounded conversion (307 diamonds/maxcond=12
-  vs. the older conversion's 51/5, which the working repo's own notes flag as giving a "different,
-  less-realistic diamond structure"). Including both would add noise, not evidence.
-
-## Added since the above was written: ISCAS85 combinational circuits (adversarial family, not real-infrastructure)
-
-Real, published, widely-cited digital-circuit benchmark suite (`pld.ttu.ee/~maksim/benchmarks/iscas85/`),
-converted this session and tested under the **same non-degenerate uniform-0.9 prior convention**
-used throughout the corpus — a deliberate worst-case stress test (prevents the zero-weight-skip
-optimization from pruning any diamond). Classify with `fanin-k`/`mesh-w` (adversarial), not with
-`mlgw`/`metro`/`net3` (real infrastructure): the priors are chosen to maximise structural
-complexity, not to represent real circuit-reliability semantics. Result is a genuine, citable
-finding: `c432` (196 nodes) alone reaches `maxcond=67`/`sum_2^C≈1.17e21`; `c1355`/`c1908`
-(587/913 nodes) crash **identification itself** via memory exhaustion on a 16GB machine — a harder
-wall than diabetes-bnlearn. `c17` (11 nodes) is the one fully-validated data point (Float64,
-Interval, and p-box all confirmed; p-box cost matched this session's `measured_ops`-based
-prediction almost exactly). Included: `iscas85-c17` (full validation), `iscas85-c432`/`c499`/`c880`
-(identify-only, adversarial-boundary structural data), `iscas85-c1355`/`c1908` (identify-only,
-crashed — the crash itself is the data point). Not included: `c2670`–`c6288` (not attempted, no
-data — see `data/corpus_expansion/iscas85_identify_only_DNF.csv` for why).
-
-## Pending
-
-- Add bnlearn's breadth claim + the real-infrastructure network names (`mlgw`, `metro`, `net3`,
-  now freshly re-confirmed this session with proper one-clean-process timing) to the manuscript
-  text — a rewrite-session task, not resolved by this data-scoping pass.
-- Decide where ISCAS85 goes in the manuscript (adversarial section placement is already an open
-  item — this is additional content for that same decision, not a new one).
-- Once the manuscript's adversarial addition exists, add the fanin-k/mesh-w fresh timed data
-  (`validation/fresh_20260816/adversarial_timed.csv` + `adversarial_fit_summary.txt` in the
-  working repo) here alongside the ISCAS85 data already present.
-- Zenodo DOI not minted — author will handle repo creation, push, and minting directly (no Claude
-  git authorship).
-
-## File-organisation cleanup pass (2026-09-27)
-
-Applied after the above scoping decisions and after this package was already archived on Zenodo
-(DOI 10.5281/zenodo.22821307); this only tidies the local working copy, it does not retroactively
-change the already-minted snapshot unless/until the author pushes a new Zenodo version. Changes:
-
-- Removed `manuscript/` entirely (draft `.tex`/`.pdf`, the stale duplicate
-  `newress_original_bundle.zip`, and the process-tracking docs `CORRECTIONS_APPLIED.md`/
-  `PARITY_CHECKLIST.md`/`PBOX_COST_MECHANISM_DRAFT.md`) — a data-availability repo does not need to
-  carry the manuscript; the journal publishes that itself.
-- Removed `reviewer_response/` entirely, including the doubled `reviewer_response/reviewer_response/`
-  nesting bug — informal judgment-call drafting material, superseded by the finished cover letter
-  and point-by-point response maintained outside this data repo.
-- Pruned every `networks/*/capacity/` and `networks/*/cpm/` subfolder (KarlNetwork,
-  metro_directed_dag_for_ipm, mlgw-gas-network, munin-dag, munin-sub1, power-network) — these
-  belong to the framework's other chapters (capacity-flow, critical-path), not this paper.
-- Pruned UI-dashboard scenario folders with no script reader: `grid-graph`'s `Breakdown 214
-  (interval)/Degraded/Major Degraded/main scenario - dt`, and `water`'s
-  `capacity_v2_demo_pack`/`Edge Bottleneck Demo`/`Interval Conservative`/`Interval Optimistic`/
-  `Mixed Bottleneck Demo`/`Node Bottleneck Demo`/`Single Point of Failure Demo`/`Source Limited
-  Demo` plus its `generate_scenarios*.js` generator scripts.
-- Removed the auto-generated `.dot`/`.png`/`.svg` diamond and network renders scattered through
-  `networks/` (25 `.dot` + 25 `.png` + 1 `.svg`, all under `counterexample-n15/diamonds/` and the
-  three `drone-network-*` folders) — regenerable visualisations, not needed for reproduction.
-- Left every network's `float`/`interval`/`pbox`/`.EDGES` representation folders untouched: several
-  of this paper's scripts synthesise priors in-code rather than reading these JSON files directly,
-  and some networks (e.g. `metro_directed_dag_for_ipm`, `test-decomp3s2t`, `KarlNetwork`,
-  `munin-dag`/`munin-sub1`, `water`) are plausibly consumed by generic name-parameterised drivers
-  (`scripts/probability/net_bdd.jl`, `bnl_oracle.jl`, `drone_C.jl`, take the network name as a CLI
-  argument, so a literal grep for the network name under-reports real usage). Could not confirm a
-  script dependency either way for those specific representation folders with confidence, so per
-  the "be conservative" rule they were left in place rather than pruned on a guess.
-- Merged `scripts/probability_20260921/` (this session's additions: `grid_bench3.jl`, `net_bdd.jl`,
-  `worked16.jl`, `drone_C.jl`, `bnl_oracle.jl`) into `scripts/probability/` — no filename collisions.
-- Renamed `data/fresh_this_session/` to `data/net3_and_pbox_scaling/`; merged its raw CSV/log data
-  into `data/final_csvs/` (p-box steps-scaling curve, grid p-box re-confirmation) and
-  `data/corpus_expansion/` (Net3 identify/propagation logs) where they matched those folders' kind
-  of content, dropping two files that were byte-identical duplicates already present in
-  `final_csvs/` (`pbox_cost_vs_diamonds_v2.csv`, `task2_pbox_steps_v2_results.csv`). The renamed
-  folder now holds only the four written task summaries (`TASK1..4_*_summary.md`), which still cite
-  their data's original filenames for traceability back to this note.
-- `data/final_csvs/`, `data/corpus_expansion/`, and `data/grid_case_study/` were otherwise left
-  untouched, as instructed (already traced to specific manuscript numbers).
+  families (`fanin-k`, `mesh-w`) — seeded and regenerated by `scripts/graph_gen.jl` /
+  `graph_families.jl` / `graph_adversarial.jl`.
+- **ISCAS85 combinational circuits** (adversarial family, not real-infrastructure): a real,
+  published, widely-cited digital-circuit benchmark suite
+  (`pld.ttu.ee/~maksim/benchmarks/iscas85/`), tested under the same non-degenerate uniform-0.9
+  prior convention used throughout the corpus — a deliberate worst-case stress test (prevents the
+  zero-weight-skip optimization from pruning any diamond). Classified with `fanin-k`/`mesh-w`
+  (adversarial), not with `mlgw`/`metro`/`net3` (real infrastructure): the priors are chosen to
+  maximise structural complexity, not to represent real circuit-reliability semantics. `c432`
+  (196 nodes) alone reaches `maxcond=67`/`sum_2^C≈1.17e21`; `c1355`/`c1908` (587/913 nodes) crash
+  identification itself via memory exhaustion on a 16GB machine — a harder wall than
+  `diabetes-bnlearn`. `c17` (11 nodes) is the one fully-validated data point (Float64, Interval,
+  and p-box all confirmed). Included: `iscas85-c17` (full validation), `iscas85-c432`/`c499`/`c880`
+  (identify-only, adversarial-boundary structural data), `iscas85-c1355`/`c1908` (identify-only,
+  crashed — the crash itself is the data point). Not included: `c2670`–`c6288` (not attempted, no
+  data — see `data/corpus_expansion/iscas85_identify_only_DNF.csv` for why).

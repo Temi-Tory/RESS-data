@@ -1,10 +1,7 @@
 # RESS reproduction package — Information Propagation Algorithm (IPA)
 
-Reproduction data, scripts, and the current manuscript draft for the RESS journal submission
-"Information Propagation Algorithm for Exact Reliability Analysis in Directed Acyclic Process
-Networks" (Ohiani, Patelli, Pyke). This folder is a staging copy assembled for a future Zenodo
-deposit — **not yet minted, not yet a git repository.** The author will `git init` and push this
-themselves.
+Reproduction data and scripts for the RESS journal submission "Information Propagation Algorithm
+for Exact Reliability Analysis in Directed Acyclic Process Networks" (Ohiani, Patelli, Pyke).
 
 - **Code**: the algorithm itself is released separately as the open-source Julia package
   `InformationPropagationAnalysis.jl`, registered in the Julia General package registry (current
@@ -21,51 +18,26 @@ themselves.
   K=6 comparison variant, + `drone-network-full` for the unrestricted-connectivity finding),
   real-infrastructure networks not yet individually named in the manuscript text
   (`mlgw-gas-network`, `metro_directed_dag_for_ipm`, `net3`), and the full 17-network bnlearn
-  benchmark set (8–724 nodes) — see `MANIFEST_DECISIONS.md` for the include/exclude rule (every
-  topology with real validated data is in; only networks with no data, invalidated inputs, a
-  different algorithm's validation, or a redundant duplicate are out) and two open manuscript-text
-  recommendations it surfaced (name the real-infrastructure networks explicitly; add a bnlearn
-  breadth claim — a strong, already-validated answer to reviewer comment 1/R3.2's request for more
-  benchmark diversity). The 129-graph synthetic corpus and the fanin-k/mesh-w adversarial families
-  are regenerated on the fly by seeded scripts in `scripts/`, not stored as static files. Each
-  network folder carries only the topology (`.EDGES`) and reliability-input representations this
-  paper's scripts read; `capacity`/`cpm` subfolders (other framework chapters), UI-dashboard
-  scenario folders, and auto-generated `.dot`/`.png`/`.svg` renders have been pruned as out of
-  scope for this reproduction package (regenerable, or belong to unrelated work).
+  benchmark set (8–724 nodes) — see `MANIFEST_DECISIONS.md` for which network maps to which claim.
+  The 129-graph synthetic corpus and the fanin-k/mesh-w adversarial families are regenerated on the
+  fly by seeded scripts in `scripts/`, not stored as static files. Each network folder carries only
+  the topology (`.EDGES`) and the reliability-input representations this paper's scripts read.
 - `data/` — every CSV/log behind a manuscript table or figure:
-  - `final_csvs/` — the "as of the applied revision" data pack (129-graph corpus, timing
-    comparisons, p-box soundness/tightness sweeps, drone belief tables), now also including the
-    p-box steps-scaling and grid p-box re-confirmation artifacts merged in from the former
-    `fresh_this_session/` staging folder.
+  - `final_csvs/` — the primary data pack: 129-graph corpus results, timing comparisons, p-box
+    soundness/tightness sweeps, drone belief tables, and the p-box steps-scaling and grid p-box
+    re-confirmation data. See `FILE_NOTES.md` in this folder for what each file contains.
   - `grid_case_study/` — the benchmark grid's own dedicated accuracy/cost suite.
   - `corpus_expansion/` — per-network identify/propagation logs and summary CSVs for the
-    real-infrastructure and ISCAS85 networks, now also including the Net3 feasibility-check
-    artifacts merged in from the former `fresh_this_session/` staging folder.
-  - `net3_and_pbox_scaling/` — (formerly `fresh_this_session/`, renamed since that name no longer
-    meant anything to a later reader) the four written task summaries from the final
-    pre-submission confirmation pass (Net3 feasibility check, the corrected p-box steps-scaling
-    curve, the grid p-box soundness re-confirmation at both tested uncertainty widths, and the
-    K=8 "silent exit" investigation, which was skipped for time and has no data artifacts); the
-    actual CSV/log data each summary describes now lives in `final_csvs/` or `corpus_expansion/`
-    per the note above, and each summary still cites its original filenames for traceability.
+    real-infrastructure and ISCAS85 networks, including the Net3 feasibility-check data.
+  - `net3_and_pbox_scaling/` — three result summaries: the Net3 feasibility check, the p-box
+    steps-scaling curve, and the grid p-box soundness check at both tested uncertainty widths.
 - `scripts/` — the Julia scripts that generate the above: corpus generation, the reference
   recursion used to validate the algorithm, independent oracles (BDD, Monte Carlo, path
   enumeration), and the case-study drivers (grid, drone K-sweep, ASCE reproduction, Net3,
-  p-box timing). `scripts/probability/` holds all probability/p-box-propagation scripts as a
-  single folder (a same-session `probability_20260921/` batch was merged in here; no session-dated
-  subfolders remain at this level).
-- `literature/CITATION_STATUS.md` — final citation audit: what's confirmed and already in the
-  manuscript, what's confirmed but not yet integrated (recommended additions), and the resolution
-  of two previously-open citations.
-- `MANIFEST_DECISIONS.md` — the include/exclude reasoning for this package (which of ~68 locally
-  available network folders were bundled and why; a few genuinely excluded as superseded/
-  exploratory and not referenced in the current manuscript).
+  p-box timing). `scripts/probability/` holds all probability/p-box-propagation scripts.
+- `MANIFEST_DECISIONS.md` — maps each network in `networks/` to the manuscript claim it supports.
 
-**Not included in this package:** the manuscript source/PDF (the journal publishes that itself;
-carrying a copy here risked drifting out of sync with the actual submission) and the
-reviewer-response drafting material (informal judgment-call notes superseded by the finished,
-numbers-verified cover letter and point-by-point response, which are not part of a
-data-availability deposit).
+**Not included in this package:** the manuscript source/PDF — the journal publishes that itself.
 
 ## How to reproduce
 
@@ -89,7 +61,7 @@ data-availability deposit).
 3. The manuscript itself is not part of this deposit — refer to the published journal article for
    the full text; this repository carries only the data and scripts behind its numbers.
 
-## Headline validated claims (see `manuscript/main.pdf` for full context)
+## Headline validated claims (see the published manuscript for full context)
 
 - Exactness: 129/129 synthetic corpus graphs, six topological families, and real infrastructure
   networks match an independent reduced-ordered BDD to floating-point precision (worst
@@ -115,14 +87,4 @@ Zenodo repository (`Temi-Tory/thesis-data`, DOI 10.5281/zenodo.22180227).
 
 Once published, cite the paper. For the software: Ohiani & Patelli,
 `InformationPropagationAnalysis.jl` (Julia General registry). For this specific reproduction
-package: this deposit's own DOI, once minted.
-
-## Status note (for the author, not for the deposit's public README)
-
-This package was assembled from the working repository as part of a pre-submission confirmation
-pass; it has not yet had the Zenodo DOI minted, and a few open decisions from that pass are listed
-in `MANIFEST_DECISIONS.md`'s closing section. See the working repository's
-`InfoPropFrmwrk/Publications/My work/RESS_response/pre-write final/README.md` for the full session
-history and remaining open items (judgment calls awaiting sign-off, the adversarial-data scope
-question, the still-pending original submission/decision letter). Remove this section before
-publishing the deposit publicly.
+package: DOI 10.5281/zenodo.22821307.

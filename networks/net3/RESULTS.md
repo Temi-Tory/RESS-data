@@ -1,9 +1,6 @@
 # Net3 end-to-end case study: results
 
-Chapter 10/11 (integrated case study — chapter numbering is shifting through the thesis rewrite;
-this pack does not depend on the final number). Built 2026-08-30 per
-`net3_case_study_requirements.md`. Every number below is source, computed, or explicitly flagged
-as assumed — none is unstated.
+Every number below is source, computed, or explicitly flagged as assumed — none is unstated.
 
 ## 1. Source and structure
 
@@ -36,11 +33,11 @@ as assumed — none is unstated.
   conversion (flow-oriented) is the one specified by the requirements doc and is used throughout
   this pack. maxcond 12 is comfortably tractable (well under the ~18 threshold flagged elsewhere
   in the project as the practical exact-inference limit).
-- **p-box was not run for this case study** (decided with the user, 2026-08-30): the total
-  conditioning-state cost, sum(2^|C|) over all 307 diamonds, is 5.47e4 — past the point where a
-  comparably-costed network (drone concentrated-minimal, K=8, sum 2^|C|=7,758) failed to
-  complete within budget in this session's own earlier testing. The probability chapter already
-  carries the full p-box tractability-boundary story in depth; re-demonstrating it here on a
+- **p-box was not run for this case study**: the total conditioning-state cost, sum(2^|C|) over
+  all 307 diamonds, is 5.47e4 — past the point where a comparably-costed network (drone
+  concentrated-minimal, K=8, sum 2^|C|=7,758) failed to complete within budget. The probability
+  chapter already carries the full p-box tractability-boundary story in depth; re-demonstrating it
+  on a
   network past that boundary would add cost without adding a new finding.
 
 ## 2. Reliability inputs
@@ -91,18 +88,6 @@ Scenarios:
   L/s), and Pump 335 (River source, the larger of the two pumps) set to 0 (out). max_flow =
   **954.64 L/s** — a 48% drop from Baseline.
 
-**A real server bug was found and fixed while verifying this section**: the first flow-analysis
-call on Baseline returned HTTP 500, `ArgumentError: Inf not allowed to be written in JSON spec`.
-Root cause: an analysis result (not the input, which correctly parses the "Inf" string token per
-the established convention) legitimately produced a raw Julia `Inf` — the reservoir-edge and
-tank-connector unbounded capacities are the first inputs in this project to genuinely exercise
-that path in a live analysis result — and the server tried to serialize it directly, which the
-JSON spec (correctly) refuses. Fixed generally, not per-field: a `sanitize_for_json` helper
-(`InfoPropFrmwrk/src/Server/Core/Common.jl`) recursively converts non-finite Float64 values to
-their string tokens ("Inf"/"-Inf"/"NaN") before serialization, applied at the response boundary
-in the Capacity, Critical-Path and Probability handlers. Re-verified after a server restart:
-both scenarios now return 200 cleanly (see numbers above).
-
 ## 4. Schedule inputs
 
 Interpretation: **restoration programme** (recommissioning of each pipe, pump and tank), the
@@ -133,8 +118,8 @@ invention:
 - Tank node duration: 24 hours, **assumed**, explicitly outside the Aurora spec's own coverage
   ("This section does not include disinfecting procedures for water storage tanks").
 
-Value forms: Baseline (Float64), Interval (+/-20% relative half-width, this session's
-established convention for CPM interval scenarios). Degraded reuses the Baseline schedule (its
+Value forms: Baseline (Float64), Interval (+/-20% relative half-width, the project's convention
+for CPM interval scenarios). Degraded reuses the Baseline schedule (its
 own scenario is a flow/capacity event, not a schedule change).
 
 Results:
@@ -153,8 +138,7 @@ Results:
 
 Wall-clock, single core, second call in a warm process (the thesis-wide convention, Appendix B).
 Baseline, second-call warm timings: reliability 4.61 s, flow 2.33 s, schedule 2.08 s (first-call:
-5.08 s, 2.47 s, 2.06 s respectively — schedule shows negligible JIT effect since an earlier call
-this session had already warmed that code path).
+5.08 s, 2.47 s, 2.06 s respectively).
 
 ## 6. Files delivered
 
@@ -183,4 +167,4 @@ python dag_ntwrk_files/net3/net3-scenarios/run_net3_scenarios.py
 ```
 (net3_to_ipf.py needs WNTR: `pip install wntr` — install into a dedicated venv, not the global
 environment; WNTR 1.5.0 pulls in numpy>=2.2.6, which breaks any matplotlib already compiled
-against numpy 1.x. This was hit and reverted cleanly this session before switching to a venv.)
+against numpy 1.x.)
