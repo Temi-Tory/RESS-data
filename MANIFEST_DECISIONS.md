@@ -97,3 +97,47 @@ data — see `data/corpus_expansion/iscas85_identify_only_DNF.csv` for why).
   working repo) here alongside the ISCAS85 data already present.
 - Zenodo DOI not minted — author will handle repo creation, push, and minting directly (no Claude
   git authorship).
+
+## File-organisation cleanup pass (2026-09-27)
+
+Applied after the above scoping decisions and after this package was already archived on Zenodo
+(DOI 10.5281/zenodo.22821307); this only tidies the local working copy, it does not retroactively
+change the already-minted snapshot unless/until the author pushes a new Zenodo version. Changes:
+
+- Removed `manuscript/` entirely (draft `.tex`/`.pdf`, the stale duplicate
+  `newress_original_bundle.zip`, and the process-tracking docs `CORRECTIONS_APPLIED.md`/
+  `PARITY_CHECKLIST.md`/`PBOX_COST_MECHANISM_DRAFT.md`) — a data-availability repo does not need to
+  carry the manuscript; the journal publishes that itself.
+- Removed `reviewer_response/` entirely, including the doubled `reviewer_response/reviewer_response/`
+  nesting bug — informal judgment-call drafting material, superseded by the finished cover letter
+  and point-by-point response maintained outside this data repo.
+- Pruned every `networks/*/capacity/` and `networks/*/cpm/` subfolder (KarlNetwork,
+  metro_directed_dag_for_ipm, mlgw-gas-network, munin-dag, munin-sub1, power-network) — these
+  belong to the framework's other chapters (capacity-flow, critical-path), not this paper.
+- Pruned UI-dashboard scenario folders with no script reader: `grid-graph`'s `Breakdown 214
+  (interval)/Degraded/Major Degraded/main scenario - dt`, and `water`'s
+  `capacity_v2_demo_pack`/`Edge Bottleneck Demo`/`Interval Conservative`/`Interval Optimistic`/
+  `Mixed Bottleneck Demo`/`Node Bottleneck Demo`/`Single Point of Failure Demo`/`Source Limited
+  Demo` plus its `generate_scenarios*.js` generator scripts.
+- Removed the auto-generated `.dot`/`.png`/`.svg` diamond and network renders scattered through
+  `networks/` (25 `.dot` + 25 `.png` + 1 `.svg`, all under `counterexample-n15/diamonds/` and the
+  three `drone-network-*` folders) — regenerable visualisations, not needed for reproduction.
+- Left every network's `float`/`interval`/`pbox`/`.EDGES` representation folders untouched: several
+  of this paper's scripts synthesise priors in-code rather than reading these JSON files directly,
+  and some networks (e.g. `metro_directed_dag_for_ipm`, `test-decomp3s2t`, `KarlNetwork`,
+  `munin-dag`/`munin-sub1`, `water`) are plausibly consumed by generic name-parameterised drivers
+  (`scripts/probability/net_bdd.jl`, `bnl_oracle.jl`, `drone_C.jl`, take the network name as a CLI
+  argument, so a literal grep for the network name under-reports real usage). Could not confirm a
+  script dependency either way for those specific representation folders with confidence, so per
+  the "be conservative" rule they were left in place rather than pruned on a guess.
+- Merged `scripts/probability_20260921/` (this session's additions: `grid_bench3.jl`, `net_bdd.jl`,
+  `worked16.jl`, `drone_C.jl`, `bnl_oracle.jl`) into `scripts/probability/` — no filename collisions.
+- Renamed `data/fresh_this_session/` to `data/net3_and_pbox_scaling/`; merged its raw CSV/log data
+  into `data/final_csvs/` (p-box steps-scaling curve, grid p-box re-confirmation) and
+  `data/corpus_expansion/` (Net3 identify/propagation logs) where they matched those folders' kind
+  of content, dropping two files that were byte-identical duplicates already present in
+  `final_csvs/` (`pbox_cost_vs_diamonds_v2.csv`, `task2_pbox_steps_v2_results.csv`). The renamed
+  folder now holds only the four written task summaries (`TASK1..4_*_summary.md`), which still cite
+  their data's original filenames for traceability back to this note.
+- `data/final_csvs/`, `data/corpus_expansion/`, and `data/grid_case_study/` were otherwise left
+  untouched, as instructed (already traced to specific manuscript numbers).

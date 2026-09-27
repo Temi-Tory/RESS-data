@@ -15,10 +15,6 @@ themselves.
 
 ## Folder structure
 
-- `manuscript/` — the current manuscript draft (`main.tex`/`main.pdf`, 44pp, compiles clean),
-  its figures, the original diagram assets, a log of every correction applied during the
-  pre-submission audit (`CORRECTIONS_APPLIED.md`), and a proposed (not yet applied) addition
-  explaining p-box computational cost (`PBOX_COST_MECHANISM_DRAFT.md`).
 - `networks/` — every network topology with real validated data supporting a manuscript claim
   (34 folders): the benchmark grid, power-network, KarlNetwork, counterexample-n15, the
   worked-example network (`test-decomp3s2t`), the applied drone case study (3 configurations + the
@@ -31,27 +27,45 @@ themselves.
   recommendations it surfaced (name the real-infrastructure networks explicitly; add a bnlearn
   breadth claim — a strong, already-validated answer to reviewer comment 1/R3.2's request for more
   benchmark diversity). The 129-graph synthetic corpus and the fanin-k/mesh-w adversarial families
-  are regenerated on the fly by seeded scripts in `scripts/`, not stored as static files.
+  are regenerated on the fly by seeded scripts in `scripts/`, not stored as static files. Each
+  network folder carries only the topology (`.EDGES`) and reliability-input representations this
+  paper's scripts read; `capacity`/`cpm` subfolders (other framework chapters), UI-dashboard
+  scenario folders, and auto-generated `.dot`/`.png`/`.svg` renders have been pruned as out of
+  scope for this reproduction package (regenerable, or belong to unrelated work).
 - `data/` — every CSV/log behind a manuscript table or figure:
   - `final_csvs/` — the "as of the applied revision" data pack (129-graph corpus, timing
-    comparisons, p-box soundness/tightness sweeps, drone belief tables).
+    comparisons, p-box soundness/tightness sweeps, drone belief tables), now also including the
+    p-box steps-scaling and grid p-box re-confirmation artifacts merged in from the former
+    `fresh_this_session/` staging folder.
   - `grid_case_study/` — the benchmark grid's own dedicated accuracy/cost suite.
-  - `fresh_this_session/` — artifacts from the final pre-submission confirmation pass (Net3
-    feasibility check, the corrected p-box steps-scaling curve, the grid p-box soundness
-    re-confirmation at both tested uncertainty widths, and the p-box-cost-vs-diamond-count
-    experiment), each with a written summary of exactly what was run and how.
+  - `corpus_expansion/` — per-network identify/propagation logs and summary CSVs for the
+    real-infrastructure and ISCAS85 networks, now also including the Net3 feasibility-check
+    artifacts merged in from the former `fresh_this_session/` staging folder.
+  - `net3_and_pbox_scaling/` — (formerly `fresh_this_session/`, renamed since that name no longer
+    meant anything to a later reader) the four written task summaries from the final
+    pre-submission confirmation pass (Net3 feasibility check, the corrected p-box steps-scaling
+    curve, the grid p-box soundness re-confirmation at both tested uncertainty widths, and the
+    K=8 "silent exit" investigation, which was skipped for time and has no data artifacts); the
+    actual CSV/log data each summary describes now lives in `final_csvs/` or `corpus_expansion/`
+    per the note above, and each summary still cites its original filenames for traceability.
 - `scripts/` — the Julia scripts that generate the above: corpus generation, the reference
   recursion used to validate the algorithm, independent oracles (BDD, Monte Carlo, path
   enumeration), and the case-study drivers (grid, drone K-sweep, ASCE reproduction, Net3,
-  p-box timing).
+  p-box timing). `scripts/probability/` holds all probability/p-box-propagation scripts as a
+  single folder (a same-session `probability_20260921/` batch was merged in here; no session-dated
+  subfolders remain at this level).
 - `literature/CITATION_STATUS.md` — final citation audit: what's confirmed and already in the
   manuscript, what's confirmed but not yet integrated (recommended additions), and the resolution
   of two previously-open citations.
-- `reviewer_response/` — the point-by-point response tracker (all 3 reviewers), three flagged
-  framing recommendations awaiting author sign-off, and a cover-letter draft.
 - `MANIFEST_DECISIONS.md` — the include/exclude reasoning for this package (which of ~68 locally
   available network folders were bundled and why; a few genuinely excluded as superseded/
   exploratory and not referenced in the current manuscript).
+
+**Not included in this package:** the manuscript source/PDF (the journal publishes that itself;
+carrying a copy here risked drifting out of sync with the actual submission) and the
+reviewer-response drafting material (informal judgment-call notes superseded by the finished,
+numbers-verified cover letter and point-by-point response, which are not part of a
+data-availability deposit).
 
 ## How to reproduce
 
@@ -72,7 +86,8 @@ themselves.
      `probability/pbox_cost_vs_diamonds_v2_one.jl <network>` — p-box cost characterisation
      (§5.3.2). **Run each invocation in its own fresh process** — see the header comment for why
      (a documented same-process timing-pollution failure mode this project has hit twice).
-3. Compile the manuscript: `pdflatex main.tex` (twice, for cross-references) from `manuscript/`.
+3. The manuscript itself is not part of this deposit — refer to the published journal article for
+   the full text; this repository carries only the data and scripts behind its numbers.
 
 ## Headline validated claims (see `manuscript/main.pdf` for full context)
 
